@@ -1,0 +1,301 @@
+/* StackBoost General Settings Dashboard */
+
+.stackboost-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stackboost-card {
+    background: var(--sb-card-bg, #fff);
+    border: var(--sb-card-border, 1px solid #ccd0d4);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+    border-radius: var(--sb-radius, 4px);
+    padding: 20px;
+    box-sizing: border-box;
+    /* Added accent border logic in common.css via specific selector, keeping base robust here */
+}
+
+.stackboost-card h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.stackboost-card p {
+    font-size: 14px;
+    color: #3c434a;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+/* System Status Card */
+.stackboost-status-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.stackboost-status-item:last-child {
+    border-bottom: none;
+}
+
+.stackboost-status-label {
+    font-weight: 600;
+    color: #50575e;
+}
+
+.stackboost-status-value {
+    color: var(--sb-accent, #2271b1);
+}
+
+.stackboost-status-value.success {
+    color: #46b450;
+    font-weight: 500;
+}
+
+.stackboost-status-value.warning {
+    color: #ffb900;
+}
+
+/* License Card Overrides */
+/* Ensure the license input doesn't overflow */
+#stackboost-license-wrapper input[type="text"],
+#stackboost-license-wrapper input[type="password"] {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    /* Styles are now handled by common dashboard rules, but we keep structure here */
+}
+
+/* Resources Card */
+.stackboost-resources-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.stackboost-resources-list li {
+    margin-bottom: 10px;
+}
+
+.stackboost-resources-btn {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 2.15384615;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 10px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    border-radius: var(--sb-radius, 3px);
+    white-space: nowrap;
+    box-sizing: border-box;
+    /* Primary Button Styles */
+    background: var(--sb-accent, #2271b1);
+    border-color: var(--sb-accent, #2271b1);
+    color: #fff;
+    text-align: center;
+    width: 100%; /* Full width button for resources */
+}
+
+.stackboost-resources-btn:hover,
+.stackboost-resources-btn:focus {
+    /* Hard to variable-ize a darken effect without HSL.
+       For now, we can try to use a filter or keep static,
+       but keeping static blue hover on dynamic red button looks bad.
+       Let's use a brightness filter. */
+    filter: brightness(0.9);
+    color: #fff;
+}
+
+/* Feature Spotlight (Upsell Widget) */
+.stackboost-feature-spotlight {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: var(--sb-radius, 4px);
+    padding: 20px 60px; /* Horizontal padding for arrows */
+    margin: 20px auto; /* Centered with top margin */
+    max-width: 800px; /* ~2/3 width on typical displays */
+    min-height: 180px; /* Lock vertical height to prevent jumping */
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+    box-sizing: border-box;
+    /* Default border override based on tier class */
+    border-left-width: 5px;
+    position: relative;
+    justify-content: space-between;
+}
+
+.stackboost-feature-spotlight.stackboost-upsell-pro {
+    border-left-color: #6c5ce7; /* Purple */
+}
+
+.stackboost-feature-spotlight.stackboost-upsell-biz {
+    border-left-color: #f1c40f; /* Gold */
+}
+
+/* Inner container for content to separate it from Nav buttons */
+.stackboost-spotlight-inner {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    /* Removed margin to allow padding of parent to handle spacing */
+}
+
+.stackboost-spotlight-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #a7aaad;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.stackboost-spotlight-nav.prev {
+    left: 10px;
+}
+
+.stackboost-spotlight-nav.next {
+    right: 10px;
+}
+
+.stackboost-spotlight-nav:hover {
+    background-color: #f0f0f1;
+    color: #2271b1;
+}
+
+.stackboost-spotlight-nav .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.stackboost-spotlight-icon {
+    flex: 0 0 60px;
+    margin-right: 20px;
+    text-align: center;
+}
+
+.stackboost-spotlight-icon .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #50575e;
+}
+
+/* Icon color inheritance from border */
+.stackboost-upsell-pro .stackboost-spotlight-icon .dashicons {
+    color: #6c5ce7;
+}
+
+.stackboost-upsell-biz .stackboost-spotlight-icon .dashicons {
+    color: #f1c40f;
+}
+
+.stackboost-spotlight-content {
+    flex: 1;
+}
+
+.stackboost-spotlight-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stackboost-spotlight-header h2 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #1d2327;
+}
+
+.stackboost-spotlight-badge {
+    font-size: 0.8em;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    color: #fff;
+    white-space: nowrap;
+    margin-left: 10px;
+    /* Base style, overridden by specific gradients */
+}
+
+.stackboost-spotlight-badge.pro {
+    /* Silver Gradient */
+    background: linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%);
+    /* For better text readability on silver/dark gradient */
+    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+
+.stackboost-spotlight-badge.business {
+    /* Gold Gradient */
+    background: linear-gradient(135deg, #f1c40f 0%, #d35400 100%);
+    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+
+.stackboost-spotlight-content p {
+    margin: 0;
+    font-size: 14px;
+    color: #50575e;
+    line-height: 1.5;
+}
+
+.stackboost-spotlight-action {
+    flex: 0 0 auto;
+    margin-left: 20px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+    .stackboost-feature-spotlight {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 20px 20px; /* Top padding for arrows if we move them, or just use flex */
+        min-height: auto; /* Allow auto height on mobile */
+    }
+
+    .stackboost-spotlight-inner {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    /* On mobile, move arrows to top corners or keep sides?
+       Sides might overlap content. Let's keep them centered vertically but smaller.
+    */
+    .stackboost-spotlight-nav {
+        /* Keep absolute positioning */
+    }
+
+    .stackboost-spotlight-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .stackboost-spotlight-action {
+        margin-left: 0;
+        margin-top: 15px;
+        width: 100%;
+    }
+
+    .stackboost-spotlight-action .button {
+        width: 100%;
+        text-align: center;
+    }
+}
