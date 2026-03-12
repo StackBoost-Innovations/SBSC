@@ -1,0 +1,453 @@
+/* StackBoost Common Admin Styles */
+
+/* Main Dashboard Wrapper */
+.stackboost-dashboard {
+    background-color: var(--sb-bg-main, #f6f7f7);
+    color: #3c434a; /* Standard WP Text Color */
+    padding: 20px; /* Internal spacing */
+    box-sizing: border-box;
+    /* Standard WP behavior: contain within .wrap */
+    width: auto;
+    max-width: 100%;
+    margin-top: 10px; /* Slight separation from title if inside wrap */
+    border-radius: var(--sb-radius, 4px);
+}
+
+/* Component Refactoring & Extensibility */
+.stackboost-dashboard .stackboost-card {
+    background: var(--sb-card-bg, #ffffff);
+    border-radius: var(--sb-radius, 4px);
+    border-top: 3px solid var(--sb-accent, #1a3d5c); /* Use accent color for top border */
+    border-right: var(--sb-card-border, 1px solid #ccd0d4);
+    border-bottom: var(--sb-card-border, 1px solid #ccd0d4);
+    border-left: var(--sb-card-border, 1px solid #ccd0d4);
+    padding-left: 20px;
+    padding-right: 20px; /* Added padding-right */
+    padding-bottom: 20px; /* Added padding-bottom to prevent content touching edge */
+    margin-top: 20px;
+}
+
+.stackboost-dashboard input[type="text"],
+.stackboost-dashboard input[type="number"],
+.stackboost-dashboard input[type="email"],
+.stackboost-dashboard input[type="password"],
+.stackboost-dashboard textarea {
+    background-color: var(--sb-input-bg, #ffffff);
+    border-radius: var(--sb-radius, 4px);
+    padding: 4px 8px; /* Compact padding */
+    border: var(--sb-card-border, 1px solid #ccd0d4);
+}
+
+/* Specific styling for selects to account for the dropdown arrow */
+.stackboost-dashboard select {
+    background-color: var(--sb-input-bg, #ffffff);
+    border-radius: var(--sb-radius, 4px);
+    /* Top/Bottom: 4px to balance height (compact), Right: 30px for arrow, Left: 8px for text */
+    padding: 4px 30px 4px 8px;
+    border: var(--sb-card-border, 1px solid #ccd0d4);
+    min-height: 30px; /* Compact height */
+    vertical-align: middle;
+}
+
+.stackboost-dashboard input[type="text"]:focus,
+.stackboost-dashboard input[type="number"]:focus,
+.stackboost-dashboard input[type="email"]:focus,
+.stackboost-dashboard input[type="password"]:focus,
+.stackboost-dashboard textarea:focus {
+    border-color: var(--sb-accent, #1a3d5c);
+    box-shadow: 0 0 0 1px var(--sb-accent, #1a3d5c);
+}
+
+.stackboost-dashboard select:focus {
+    border-color: var(--sb-accent, #1a3d5c);
+    box-shadow: 0 0 0 1px var(--sb-accent, #1a3d5c);
+}
+
+.stackboost-rule {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: var(--sb-spacing, 10px);
+    border: var(--sb-card-border, 1px solid #ccd0d4);
+    border-radius: var(--sb-radius, 4px);
+    margin-bottom: 10px;
+    background-color: var(--sb-bg-main, #f6f7f7);
+}
+
+.stackboost-rule select {
+    min-width: 150px;
+}
+
+.stackboost-rule-columns {
+    flex-grow: 1;
+}
+
+/* Shared Icon Button Style */
+.stackboost-icon-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: #50575e;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; /* Consistent touch target */
+    height: 30px;
+    transition: color 0.15s ease-in-out;
+}
+
+.stackboost-icon-btn:hover {
+    background: transparent;
+    border: none;
+    color: var(--sb-accent, #2271b1); /* Default hover color */
+}
+
+.stackboost-icon-btn:focus {
+    outline: none;
+    box-shadow: none;
+    color: var(--sb-accent, #2271b1);
+}
+
+.stackboost-icon-btn .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Specific Icon Hover Colors */
+.stackboost-icon-btn .dashicons-edit:hover,
+.stackboost-icon-btn:hover .dashicons-edit {
+    color: #ffb605;
+}
+
+.stackboost-icon-btn .dashicons-trash:hover,
+.stackboost-icon-btn:hover .dashicons-trash {
+    color: #CC0202;
+}
+
+#stackboost-no-rules-message {
+    color: #666;
+    font-style: italic;
+}
+
+/* Dual List Box Styles */
+.stackboost-dual-list-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.stackboost-dual-list-container .dual-list-box {
+    display: flex;
+    flex-direction: column;
+    /* Removed flex: 1 to fix massive gap issue requested by user */
+}
+
+.stackboost-dual-list-container .dual-list-box h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.stackboost-dual-list-container .dual-list-box select {
+    width: 250px; /* Revert to fixed width to prevent massive expansion */
+    height: 180px !important;
+}
+
+.stackboost-dual-list-container .dual-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-self: center;
+    justify-content: center;
+}
+
+.stackboost-dual-list-container .dual-buttons .button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #ccc; /* Basic border, updated on hover */
+    background: #f7f7f7;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.stackboost-dual-list-container .dual-buttons .button:hover {
+    background-color: #f0f0f0;
+    border-color: var(--sb-accent, #2271b1);
+}
+
+.stackboost-dual-list-container .dual-buttons .button:active {
+    background-color: #e0e0e0;
+    border-color: #777;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stackboost-dual-list-container .dual-buttons .button .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+}
+
+/* Match UTM specific transforms */
+#stackboost_add_status .dashicons,
+#stackboost_remove_status .dashicons {
+    transform: scale(1.3);
+}
+
+/* How To Use Page Styles */
+.stackboost-how-to-use hr {
+    margin: 40px 0;
+    border: 0;
+    border-top: 1px solid #ddd;
+}
+
+.stackboost-how-to-use h2 {
+    font-size: 22px;
+    color: #2c3338;
+    border-bottom: 2px solid var(--sb-accent, #2271b1);
+    padding-bottom: 8px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.stackboost-how-to-use h3 {
+    font-size: 18px;
+    color: #444;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.stackboost-how-to-use p,
+.stackboost-how-to-use li {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.stackboost-how-to-use ul,
+.stackboost-how-to-use ol {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.stackboost-how-to-use ul {
+    list-style: disc;
+}
+
+.stackboost-how-to-use code {
+    background-color: var(--sb-bg-main, #f0f0f1);
+    color: #333;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+/* Uninstall Protocol Styles */
+#stackboost-uninstall-wrapper {
+    border: var(--sb-card-border, 1px solid #ccc);
+    padding: 20px;
+    background: var(--sb-card-bg, #fff);
+    margin-top: 20px;
+    max-width: 800px;
+    border-radius: var(--sb-radius, 4px);
+    /* Removed transition to prevent unwanted animation */
+}
+
+#stackboost-uninstall-wrapper.authorized-mode {
+    border: 2px solid #d63638;
+    background: #fff5f5;
+}
+
+.stackboost-uninstall-status {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+.stackboost-uninstall-status .status-text {
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.authorized-mode .status-text {
+    color: #d63638;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.stackboost-uninstall-timer-warning {
+    background: #fff;
+    border-left: 4px solid #d63638;
+    padding: 10px;
+    margin: 15px 0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.stackboost-uninstall-timer-warning p {
+    margin: 5px 0;
+    font-size: 1.1em;
+}
+
+#stackboost-uninstall-timer {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #d63638;
+}
+
+/* Button Styles for Uninstall Protocol */
+#stackboost-authorize-uninstall-btn {
+    color: #a00;
+    text-decoration: underline;
+}
+#stackboost-authorize-uninstall-btn:hover {
+    color: #dc3232;
+}
+
+#stackboost-cancel-uninstall-btn {
+    border-color: #d63638;
+    color: #d63638;
+}
+#stackboost-cancel-uninstall-btn:hover {
+    background: #d63638;
+    color: #fff;
+}
+
+/* Modal Styles for Uninstall Protocol */
+.stackboost-modal {
+    display: none;
+    position: fixed;
+    z-index: 100000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+    padding-top: 60px;
+}
+.stackboost-modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: var(--sb-radius, 8px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    position: relative;
+    text-align: center;
+}
+.stackboost-modal-close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.stackboost-modal-close-button:hover {
+    color: black;
+}
+.stackboost-modal-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Theme Application for Standard WP Elements */
+
+/* Primary Buttons */
+.stackboost-dashboard .button-primary {
+    background: var(--sb-accent, #2271b1) !important;
+    border-color: var(--sb-accent, #2271b1) !important;
+    color: #fff !important;
+    transition: all 0.2s ease;
+}
+
+.stackboost-dashboard .button-primary:hover,
+.stackboost-dashboard .button-primary:focus {
+    /* Slight opacity change to simulate darkening without a separate variable */
+    opacity: 0.9;
+    background: var(--sb-accent, #2271b1) !important;
+    border-color: var(--sb-accent, #2271b1) !important;
+}
+
+/* Button Margins within Cards */
+.stackboost-dashboard .stackboost-card .button,
+.stackboost-dashboard .stackboost-card .button-primary {
+    margin-bottom: 10px;
+}
+
+/* Section Headers */
+.stackboost-dashboard h2 {
+    color: var(--sb-accent, #1a3d5c);
+    /* Ensure it overrides any default WP h2 styles if necessary, though usually color isn't set aggressively */
+}
+
+/* Separators */
+.stackboost-dashboard hr {
+    border: 0;
+    border-top: 1px solid var(--sb-card-border, #ccd0d4);
+    margin: 20px 0;
+}
+
+/* PRO Badge */
+.stackboost-badge-pro {
+    background-color: var(--sb-accent, #2271b1);
+    color: #fff;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 4px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+/* Stacked Form Layout (Option B) - Scoped to Cards for safe migration */
+.stackboost-dashboard .stackboost-card .form-table,
+.stackboost-dashboard .stackboost-card .form-table tbody,
+.stackboost-dashboard .stackboost-card .form-table tr,
+.stackboost-dashboard .stackboost-card .form-table th,
+.stackboost-dashboard .stackboost-card .form-table td {
+    display: block;
+    width: 100%;
+}
+
+.stackboost-dashboard .stackboost-card .form-table th {
+    padding: 0;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--sb-accent, #333); /* Use theme accent for label */
+}
+
+.stackboost-dashboard .stackboost-card .form-table td {
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.stackboost-dashboard .stackboost-card .form-table p.description {
+    margin-top: 5px;
+    font-size: 13px;
+    color: #666;
+}
+
+/* Ensure spacing below top table navigation */
+.tablenav.top {
+    margin-bottom: 20px !important;
+    height: auto !important;
+}
