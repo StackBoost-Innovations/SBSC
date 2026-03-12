@@ -1,0 +1,238 @@
+jQuery(document).ready(function($) {
+    var modal = $('#stackboost-ats-question-modal');
+    var form = $('#stackboost-ats-question-form');
+    var tableBody = $('#stackboost-ats-questions-list tbody');
+
+    // Central Logging Helper - Wraps global utility
+    function log(message, context) {
+        if (typeof window.stackboost_log === 'function') {
+            window.stackboost_log('[ATS] ' + message, context);
+        } else if (stackboost_ats_manage.diagnostic_log_enabled) {
+            window.stackboost_log('[StackBoost ATS] ' + message, context || '');
+        }
+    }
+
+    log('Manage Questions script initialized.');
+
+    // Helper to show a temporary status message
+    function showStatus(message, type) {
+        // Remove existing notices
+        $('.stackboost-ats-status-notice').remove();
+
+        var noticeClass = type === 'error' ? 'notice-error' : 'notice-success';
+        var notice = $('<div class="notice ' + noticeClass + ' stackboost-ats-status-notice is-dismissible"><p>' + message + '</p></div>');
+
+        $('.stackboost-ats-questions-list').before(notice);
+
+        if (type !== 'error') {
+            setTimeout(function() {
+                notice.fadeOut(function() { $(this).remove(); });
+            }, 3000);
+        }
+    }
+
+    // Initialize Dialog
+    modal.dialog({
+        autoOpen: false,
+        modal: true,
+        width: 500,
+        buttons: {
+            "Save": function() {
+                saveQuestion();
+            },
+            "Cancel": function() {
+                $(this).dialog("close");
+            }
+        },
+        close: function() {
+            form[0].reset();
+            $('#question_id').val('');
+            $('#ats_dropdown_options_group').hide();
+
+            // Re-enable option if it was disabled (cleanup)
+            var ticketOption = $('#question_type option[value="ticket_number"]');
+            ticketOption.prop('disabled', false).text('Ticket Number');
+            $('#ats_limit_reached_msg').hide();
+
+            // Reset visibility
+            $('#question_type').trigger('change');
+        }
+    });
+
+    // Initialize Sortable
+    tableBody.sortable({
+        handle: '.stackboost-ats-sort-handle',
+        update: function(event, ui) {
+            log('Order updated via sortable.');
+            showStatus('Saving order...', 'info');
+
+            var order = [];
+            tableBody.find('tr').each(function() {
+                order.push($(this).data('id'));
+            });
+
+            $.post(stackboost_ats_manage.ajax_url, {
+                action: 'stackboost_ats_reorder_questions',
+                nonce: stackboost_ats_manage.nonce,
+                order: order
+            }, function(response) {
+                if (!response.success) {
+                    log('Reorder failed', response);
+                    showStatus('Failed to save order: ' + response.data, 'error');
+                } else {
+                    log('Reorder successful');
+                    showStatus('Order saved!', 'success');
+                }
+            });
+        }
+    });
+
+    // Check for existing Ticket Number question and update UI
+    function updateTicketNumberAvailability() {
+        var currentQuestionId = $('#question_id').val();
+        var ticketNumberExists = false;
+        var existingId = null;
+
+        tableBody.find('tr').each(function() {
+            if ($(this).data('type') === 'ticket_number') {
+                ticketNumberExists = true;
+                existingId = $(this).data('id');
+                return false; // break
+            }
+        });
+
+        var ticketOption = $('#question_type option[value="ticket_number"]');
+        var limitMsg = $('#ats_limit_reached_msg');
+
+        // Logic: Disable if one exists AND we are NOT editing that specific question
+        // Note: currentQuestionId is string, existingId is integer usually, loose comparison ok
+        if (ticketNumberExists && (!currentQuestionId || currentQuestionId != existingId)) {
+            ticketOption.prop('disabled', true).text('Ticket Number (Limit Reached)');
+            limitMsg.show();
+        } else {
+            ticketOption.prop('disabled', false).text('Ticket Number');
+            limitMsg.hide();
+        }
+    }
+
+    // Toggle Fields Visibility
+    $('#question_type').on('change', function() {
+        var type = $(this).val();
+        var dropdownGroup = $('#ats_dropdown_options_group');
+        // Prefill key is now available for all types, so no logic needed for it
+
+        // Dropdown options logic
+        if (type === 'dropdown') {
+            dropdownGroup.show();
+        } else {
+            dropdownGroup.hide();
+        }
+    });
+
+    // Open Modal for New Question
+    $('#stackboost-ats-add-question').on('click', function(e) {
+        e.preventDefault();
+        log('Add Question button clicked.');
+        updateTicketNumberAvailability();
+        $('#question_type').trigger('change');
+        modal.dialog('option', 'title', 'Add New Question');
+        modal.dialog('open');
+    });
+
+    // Open Modal for Edit
+    $(document).on('click', '.stackboost-ats-edit-question', function(e) {
+        e.preventDefault();
+        var questionId = $(this).data('id');
+        log('Edit Question button clicked.', questionId);
+
+        $.post(stackboost_ats_manage.ajax_url, {
+            action: 'stackboost_ats_get_question',
+            nonce: stackboost_ats_manage.nonce,
+            question_id: questionId
+        }, function(response) {
+            if (response.success) {
+                log('Question data retrieved.', response.data);
+                var q = response.data;
+                $('#question_id').val(q.id);
+                $('#question_text').val(q.question_text);
+                $('#question_type').val(q.question_type).trigger('change');
+                $('#ats_sort_order').val(q.sort_order);
+                $('#ats_is_required').prop('checked', q.is_required == 1);
+                $('#ats_dropdown_options').val(q.options_str);
+
+                // Set Prefill Key
+                $('#ats_prefill_key').val(q.prefill_key || '');
+                $('#ats_is_readonly_prefill').prop('checked', q.is_readonly_prefill == 1);
+
+                updateTicketNumberAvailability();
+                modal.dialog('option', 'title', 'Edit Question');
+                modal.dialog('open');
+            } else {
+                log('Error fetching question.', response);
+                stackboostAlert('Error fetching question: ' + response.data, 'Error');
+            }
+        });
+    });
+
+    // Delete Question
+    $(document).on('click', '.stackboost-ats-delete-question', function(e) {
+        e.preventDefault();
+        var row = $(this).closest('tr');
+        var questionId = $(this).data('id');
+
+        stackboostConfirm(
+            'Are you sure you want to delete this question?',
+            'Confirm Delete',
+            function() {
+                log('Delete Question requested.', questionId);
+
+                $.post(stackboost_ats_manage.ajax_url, {
+                    action: 'stackboost_ats_delete_question',
+                    nonce: stackboost_ats_manage.nonce,
+                    question_id: questionId
+                }, function(response) {
+                    if (response.success) {
+                        log('Question deleted successfully.');
+                        row.fadeOut(300, function() { $(this).remove(); });
+                        showStatus('Question deleted.', 'success');
+                    } else {
+                        log('Error deleting question.', response);
+                        stackboostAlert('Error deleting question: ' + response.data, 'Error');
+                    }
+                });
+            },
+            null, // No action on cancel
+            'Yes, Delete',
+            'Cancel',
+            true // isDanger
+        );
+    });
+
+    function saveQuestion() {
+        var data = {
+            action: 'stackboost_ats_save_question',
+            nonce: stackboost_ats_manage.nonce,
+            question_id: $('#question_id').val(),
+            question_text: $('#question_text').val(),
+            question_type: $('#question_type').val(),
+            sort_order: $('#ats_sort_order').val(),
+            is_required: $('#ats_is_required').is(':checked') ? 1 : 0,
+            is_readonly_prefill: $('#ats_is_readonly_prefill').is(':checked') ? 1 : 0,
+            dropdown_options: $('#ats_dropdown_options').val(),
+            prefill_key: $('#ats_prefill_key').val() // Include new field
+        };
+
+        log('Saving question...', data);
+
+        $.post(stackboost_ats_manage.ajax_url, data, function(response) {
+            if (response.success) {
+                log('Question saved successfully.');
+                modal.dialog("close");
+                location.reload(); // Reload to refresh list simply and robustly
+            } else {
+                log('Error saving question.', response);
+                stackboostAlert('Error saving question: ' + response.data, 'Error');
+            }
+        });
+    }
+});
