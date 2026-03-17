@@ -66,7 +66,9 @@ final class Plugin {
 		// or handle their own internal checks. However, for stricter control, we can wrap them.
 
 		// Lite Features
-		$this->modules['qol_enhancements'] = QolEnhancements\WordPress::get_instance();
+		if ( stackboost_is_feature_active( 'qol_enhancements' ) ) {
+			$this->modules['qol_enhancements'] = QolEnhancements\WordPress::get_instance();
+		}
 
 		// Appearance Module (Always Active)
         stackboost_log( 'Loading Appearance Module...', 'appearance' );
@@ -77,17 +79,33 @@ final class Plugin {
 		// For now, assuming it's part of the base package.
 		$this->modules['ticket_view'] = TicketView\WordPress::get_instance();
 
-		$this->modules['after_hours_notice'] = AfterHoursNotice\WordPress::get_instance();
-
-		$this->modules['date_time_formatting'] = DateTimeFormatting\WordPress::get_instance();
-
-		// Conditional Options (Lite)
-		$class = 'StackBoost\ForSupportCandy\Modules\ConditionalOptions\WordPress';
-		if ( class_exists( $class ) ) {
-			$this->modules['conditional_options'] = $class::get_instance();
+		if ( stackboost_is_feature_active( 'after_hours_notice' ) ) {
+			$this->modules['after_hours_notice'] = AfterHoursNotice\WordPress::get_instance();
 		}
 
-}
+		if ( stackboost_is_feature_active( 'date_time_formatting' ) ) {
+			$this->modules['date_time_formatting'] = DateTimeFormatting\WordPress::get_instance();
+		}
+
+		// Conditional Options (Lite)
+		if ( stackboost_is_feature_active( 'conditional_options' ) ) {
+			$class = 'StackBoost\ForSupportCandy\Modules\ConditionalOptions\WordPress';
+			if ( class_exists( $class ) ) {
+				$this->modules['conditional_options'] = $class::get_instance();
+			}
+		}
+
+		if ( stackboost_is_feature_active( 'ticket_metrics' ) ) {
+			$class = 'StackBoost\ForSupportCandy\Modules\TicketMetrics\WordPress';
+			if ( class_exists( $class ) ) {
+				$this->modules['ticket_metrics'] = $class::get_instance();
+			}
+		}
+
+		// Pro Features
+
+		// Business Features
+	}
 
 	/**
 	 * Initialize WordPress hooks that are central to the plugin.
@@ -155,6 +173,15 @@ final class Plugin {
 			STACKBOOST_PLUGIN_URL . 'assets/libraries/selectwoo/css/selectWoo.min.css',
 			[],
 			'1.0.8'
+		);
+
+		// Chart.js
+		wp_register_script(
+			'stackboost-chartjs',
+			STACKBOOST_PLUGIN_URL . 'assets/libraries/chartjs/chart.umd.js',
+			[],
+			'4.4.7',
+			true
 		);
 	}
 
@@ -264,15 +291,19 @@ final class Plugin {
 		];
 
 		// Gather data from QOL Enhancements module
-		$qol_core                       = new QolEnhancements\Core();
-		$features_data['ticket_details_card']    = [ 'enabled' => ! empty( $options['enable_ticket_details_card'] ) ];
-		$features_data['hide_empty_columns'] = [
-			'enabled'       => ! empty( $options['enable_hide_empty_columns'] ),
-			'hide_priority' => ! empty( $options['enable_hide_priority_column'] ),
-		];
-		// Removed legacy ticket_type_hiding logic
+		if ( stackboost_is_feature_active( 'qol_enhancements' ) ) {
+			$qol_core                       = new QolEnhancements\Core();
+			$features_data['ticket_details_card']    = [ 'enabled' => ! empty( $options['enable_ticket_details_card'] ) ];
+			$features_data['hide_empty_columns'] = [
+				'enabled'       => ! empty( $options['enable_hide_empty_columns'] ),
+				'hide_priority' => ! empty( $options['enable_hide_priority_column'] ),
+			];
+			// Removed legacy ticket_type_hiding logic
+		}
 
-if ( ! empty( $features_data ) ) {
+		// Gather data from Conditional Views module
+
+		if ( ! empty( $features_data ) ) {
 			$localized_data['features'] = $features_data;
 		}
 
@@ -321,6 +352,8 @@ if ( ! empty( $features_data ) ) {
             'stackboost-for-supportcandy_page_stackboost-appearance',
             'stackboost-for-supportcandy_page_stackboost-chat-bubbles',
             'stackboost-for-supportcandy_page_stackboost-conditional-options',
+            'stackboost-for-supportcandy_page_stackboost-ticket-metrics',
+            'stackboost_page_stackboost-ticket-metrics',
             // Explicitly ensure the Date & Time page hook is covered for AJAX nonce
             'stackboost_page_stackboost-date-time',
 		];
@@ -329,6 +362,14 @@ if ( ! empty( $features_data ) ) {
 		// This ensures features like the Ticket Details Card work for agents in the backend.
 		if ( 'supportcandy_page_wpsc-tickets' === $hook_suffix ) {
 			$this->enqueue_and_localize_frontend_scripts();
+		}
+
+		// Enqueue Tooltip scripts specifically for Ticket Metrics
+		if ( 'stackboost_page_stackboost-ticket-metrics' === $hook_suffix || 'stackboost-for-supportcandy_page_stackboost-ticket-metrics' === $hook_suffix ) {
+			wp_enqueue_script( 'stackboost-tippy' );
+			wp_enqueue_script( 'stackboost-chartjs' );
+			wp_enqueue_script( 'stackboost-selectwoo' );
+			wp_enqueue_style( 'stackboost-selectwoo' );
 		}
 
 		if ( in_array( $hook_suffix, $pages_with_common_script, true ) ) {

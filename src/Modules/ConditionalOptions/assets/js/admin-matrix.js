@@ -14,12 +14,14 @@
         isEnabled: stackboostCO.enabled,
         fieldOptionsCache: {},
         rolesCache: { wp: [], sc: [] },
+        limit: (stackboostCO.tier === 'lite') ? 5 : 999,
         currentEditingSlug: null,
         isNewRule: false
     };
 
     $(document).ready(function() {
         renderRulesTable();
+        updateCounter();
         initModalEvents();
         initToggle();
 
@@ -28,6 +30,11 @@
 
         $('#pm-add-rule-btn').on('click', function(e) {
             e.preventDefault();
+            var count = Object.keys(state.rules).length;
+            if (count >= state.limit) {
+                stackboostAlert(stackboostCO.i18n.limit_reached);
+                return;
+            }
             openModal(null);
         });
     });
@@ -116,6 +123,7 @@
                 $tbody.append(row);
             });
         }
+        updateCounter();
     }
 
     // --- Modal Logic ---
@@ -487,5 +495,16 @@
         return stackboostCO.fields[slug] || slug;
     }
 
+    function updateCounter() {
+        var count = Object.keys(state.rules).length;
+        var text = 'Rules Used: ' + count + ' / ' + (state.limit === 999 ? '∞' : state.limit);
+        $('.pm-limit-counter').text(text);
+
+        if (count >= state.limit) {
+            $('.pm-limit-counter').addClass('limit-reached');
+        } else {
+             $('.pm-limit-counter').removeClass('limit-reached');
+        }
+    }
 
 })(jQuery);
