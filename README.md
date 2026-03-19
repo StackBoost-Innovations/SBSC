@@ -31,28 +31,6 @@ Create powerful, context-aware rules to control column visibility in the ticket 
 
 *Example:* Show the "Billing Code" column *only* when the "Accounting" view is active.
 
-### Company Directory (Business Tier)
-A complete system to manage staff, locations, and departments.
-*   **Staff Profiles:** Detailed profiles with photo, contact info, and WordPress user linking.
-*   **Contact Widget:** A dashboard widget on the ticket view showing the contact details of the ticket requester (if they are in the directory).
-*   **Frontend Directory:** A searchable staff directory for your users.
-
-### Onboarding Dashboard (Business Tier)
-Streamline your employee onboarding process.
-*   **Steps Sequence:** Define a drag-and-drop sequence of onboarding tasks.
-*   **Progress Tracking:** Track the progress of new hires through the dashboard.
-*   **PDF Certificates:** Automatically generate and email completion certificates.
-
-### Unified Ticket Macro (Pro Tier)
-Generate consistent, professional ticket summaries for email notifications.
-*   **Customizable Fields:** Select exactly which fields to include in the email summary.
-*   **Macro Support:** Use `{{stackboost_unified_ticket}}` in your SupportCandy email templates.
-
-### After Ticket Survey (Pro Tier)
-Collect customer satisfaction feedback automatically.
-*   **Survey Builder:** Create custom surveys with various question types.
-*   **Automation:** Automatically email the survey link when a ticket is closed.
-*   **Highlander Rule:** Enforces a limit of one "Ticket Number" field per survey to prevent data conflicts.
 
 ### Diagnostics & Logging
 A robust system for troubleshooting.
