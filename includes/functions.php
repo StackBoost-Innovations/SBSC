@@ -32,7 +32,6 @@ function stackboost_is_feature_active( string $feature_slug ): bool {
         'after_hours_notice',
         'date_time_formatting',
         'conditional_options',
-        'ticket_metrics',
     ];
 
     $features_pro = [
@@ -41,6 +40,7 @@ function stackboost_is_feature_active( string $feature_slug ): bool {
         'after_ticket_survey',
         'unified_ticket_macro',
         'chat_bubbles',
+        'ticket_metrics',
     ];
 
     $features_business = [

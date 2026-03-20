@@ -34,11 +34,9 @@ class Settings {
 		add_action( 'admin_menu', [ $this, 'add_admin_menu' ] );
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
 		add_action( 'admin_init', [ $this, 'handle_log_actions' ] );
-
-		add_action( 'wp_ajax_stackboost_clear_log', [ $this, 'ajax_clear_log' ] );
+add_action( 'wp_ajax_stackboost_clear_log', [ $this, 'ajax_clear_log' ] );
 		add_action( 'wp_ajax_stackboost_save_settings', [ $this, 'ajax_save_settings' ] );
-
-		add_action( 'wp_ajax_stackboost_authorize_uninstall', [ $this, 'ajax_authorize_uninstall' ] );
+add_action( 'wp_ajax_stackboost_authorize_uninstall', [ $this, 'ajax_authorize_uninstall' ] );
 		add_action( 'wp_ajax_stackboost_cancel_uninstall', [ $this, 'ajax_cancel_uninstall' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 	}
@@ -365,7 +363,6 @@ class Settings {
                         </div>
                     </div>
 
-                    
 
                     <!-- Card 3: Resources -->
                     <div class="stackboost-card">
@@ -466,9 +463,7 @@ class Settings {
 			}
 		}
 
-        // License Settings (General Page)
-
-		// Diagnostic Log Settings Section
+// Diagnostic Log Settings Section
 		add_settings_section(
 			'stackboost_tools_section',
 			__( 'Diagnostic Log', 'stackboost-for-supportcandy' ),
@@ -615,11 +610,7 @@ class Settings {
 		<?php
 	}
 
-    
-
-    
-
-	/**
+/**
 	 * Sanitize all settings.
 	 */
 	public function sanitize_settings( array $input ): array {
@@ -1317,11 +1308,7 @@ class Settings {
 		return array_values( $pool ); // Re-index array
 	}
 
-    
-
-    
-
-	/**
+/**
 	 * AJAX Handler: Authorize Clean Uninstall.
 	 */
 	public function ajax_authorize_uninstall() {

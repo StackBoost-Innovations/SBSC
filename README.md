@@ -3,7 +3,7 @@ Contributors: StackBoost
 Tags: supportcandy, helpdesk, support, ticket system
 Requires at least: 6.0
 Tested up to: 6.9
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,23 +13,29 @@ StackBoost enhances SupportCandy with advanced workflow, UI controls, and powerf
 
 StackBoost includes several modules that can be enabled or disabled based on your needs.
 
+### Ticket View Card
+Eliminate "tab fatigue" and boost agent efficiency with a high-performance preview system accessible directly from the ticket list.
+*   **Instant Context:** Right-click any ticket to launch a "Details Card" containing essential info and conversation history without leaving the main dashboard.
+*   **Smart Responsive Layout:** The interface automatically adapts to a side-by-side view for longer tickets, maximizing screen real estate.
+*   **Interactive History:** Expand or collapse full conversation threads instantly via AJAX-powered triggers for a lightning-fast experience.
+
 ### Core Enhancements
-*   **Ticket View Popup:** Right-click any ticket in the list to see a quick "Details Card" popup.
-    *   **Smart Layout:** Automatically switches to a side-by-side view if the content is too tall.
-    *   **Interactive History:** Expand and collapse conversation history directly within the popup.
-    *   **License Fallback:** gracefully degrades to standard fields if the PRO license is inactive.
-*   **General Cleanup:** Automatically hide empty columns or the priority column to reduce clutter in the ticket list.
-*   **Ticket Type Hiding:** Restrict which ticket types are visible to non-agent users in the submission form.
-*   **After Hours Notice:** Display a customizable warning notice on the ticket form when users attempt to submit a ticket outside of configured business hours.
+Take back control of your support dashboard with essential Quality of Life (QoL) refinements.
+*   **Interface Cleanup:** Automatically declutter your workspace by hiding empty columns or force-hiding the Priority column.
+*   **After Hours Notice:** Set clear boundaries by displaying customizable warning banners on ticket forms when users attempt to submit requests outside of your business hours.
+*   **Enforced Resolution:** Hide the "Reply & Close" button for non-agents to ensure tickets only reach a 'Closed' status once your team has verified the solution.
 
-### Conditional Column Hiding
-Create powerful, context-aware rules to control column visibility in the ticket list based on the active view (filter).
+### Conditional Options
+Take granular control over your ticket forms by defining exactly which options are visible to specific user groups. Using an intuitive administration matrix, you can block specific WordPress or SupportCandy roles from seeing individual choices within multiple-choice fields (such as dropdowns, checkboxes, and radio buttons).
+*   **Smart Visibility Rules:** Tailor your forms based on WordPress roles or SupportCandy agent roles.
+*   **Broad Field Support:** Works seamlessly with standard fields (Category, Priority, Status) and custom option-based fields.
+*   **Zero Distortion:** Options are filtered in real-time on the frontend without requiring page reloads or slowing down the user experience.
+*   **Enterprise-Grade Security:** Unlike tools that only hide elements visually, StackBoost includes server-side enforcement. This ensures that restricted options are stripped out during submission, preventing unauthorized data from ever reaching your database.
 
-*   **SHOW ONLY:** Make a column visible *only* in a specific view and hide it everywhere else by default.
-*   **HIDE:** Explicitly hide a column in a specific view.
-*   **SHOW:** Create exceptions to override implicit hiding rules.
-
-*Example:* Show the "Billing Code" column *only* when the "Accounting" view is active.
+### Date & Time Formatting
+Enhance the user experience by enforcing unified Date and Time formats across your support desk.
+*   **Rules-Based Styling:** Create precise formatting rules that apply dynamically to target date/time columns in your ticket list.
+*   **Timezone Safe:** Correctly parses and applies local WordPress timezone offsets to all displayed timestamps to completely prevent confusion for international users and remote teams.
 
 
 ### Diagnostics & Logging
@@ -42,7 +48,6 @@ A robust system for troubleshooting.
 
 This plugin utilizes the following 3rd-party open-source libraries:
 *   **SelectWoo (v1.0.8):** A fork of Select2 by WooCommerce, used for enhanced select boxes. [Repository](https://github.com/woocommerce/selectWoo)
-*   **DataTables (v2.3.6):** Used for advanced table sorting and filtering in premium modules. [Website](https://datatables.net/)
 *   **Tippy.js (v6.0):** Used for tooltips. [Website](https://atomiks.github.io/tippyjs/)
 *   **Popper.js (v2.0):** Used as a positioning engine for Tippy.js. [Website](https://popper.js.org/)
 *   **jQuery UI:** Used for date pickers and drag-and-drop interfaces. [Website](https://jqueryui.com/)
