@@ -94,23 +94,14 @@ class WordPress extends Module {
 		}
 
 		// Determine View Type
-		$view_type = $options['ticket_details_view_type'] ?? 'standard';
-		if ( 'utm' === $view_type && ! stackboost_is_feature_active( 'unified_ticket_macro' ) ) {
-			$view_type = 'standard'; // Fallback if Pro feature is disabled
-		}
-
-		// Determine Content to Include
+		$view_type = 'standard';
+// Determine Content to Include
 		$content_type = $options['ticket_details_content'] ?? 'details_only';
 		$image_handling = $options['ticket_details_image_handling'] ?? 'fit';
 		$limit = isset( $options['ticket_details_history_limit'] ) ? intval( $options['ticket_details_history_limit'] ) : 0;
-		$chat_bubbles = ! empty( $options['ticket_details_chat_bubbles'] );
+		$chat_bubbles = false;
 
-		// Enforce Pro Check for Chat Bubbles
-		if ( $chat_bubbles && ! stackboost_is_feature_active( 'unified_ticket_macro' ) ) {
-			$chat_bubbles = false;
-		}
-
-		$details_html = '';
+$details_html = '';
 		$history_html = '';
 
 		// 1. Generate Base Details (Table/Card)
@@ -391,16 +382,7 @@ class WordPress extends Module {
 		add_settings_field( 'stackboost_enable_ticket_details_card', __( 'Enable Feature', 'stackboost-for-supportcandy' ), [ $this, 'render_checkbox_field' ], $page_slug, 'stackboost_ticket_details_card_section', [ 'id' => 'enable_ticket_details_card', 'desc' => 'Shows a card with ticket details on right-click.' ] );
 
 		// New Options for Ticket Details Card
-		add_settings_field(
-			'stackboost_ticket_details_view_type',
-			__( 'Card View Type', 'stackboost-for-supportcandy' ),
-			[ $this, 'render_view_type_select' ], // Custom renderer for Pro badge
-			$page_slug,
-			'stackboost_ticket_details_card_section',
-			[ 'id' => 'ticket_details_view_type', 'desc' => 'Choose how the ticket details are displayed.' ]
-		);
-
-		add_settings_field(
+add_settings_field(
 			'stackboost_ticket_details_content',
 			__( 'Include Content', 'stackboost-for-supportcandy' ),
 			[ $this, 'render_select_field' ],
@@ -447,20 +429,7 @@ class WordPress extends Module {
 			]
 		);
 
-		add_settings_field(
-			'stackboost_ticket_details_chat_bubbles',
-			__( 'Enable Chat Bubbles', 'stackboost-for-supportcandy' ) . ' <span class="stackboost-badge-pro">PRO</span>',
-			[ $this, 'render_pro_checkbox_field' ],
-			$page_slug,
-			'stackboost_ticket_details_card_section',
-			[
-				'id'      => 'ticket_details_chat_bubbles',
-				'desc'    => 'Display conversation history as chat bubbles (Requires Pro Plan).',
-				'feature' => 'unified_ticket_macro',
-			]
-		);
-
-		// Section: General Cleanup
+// Section: General Cleanup
 		add_settings_section( 'stackboost_general_cleanup_section', __( 'General Cleanup', 'stackboost-for-supportcandy' ), null, $page_slug );
 		add_settings_field( 'stackboost_enable_hide_empty_columns', __( 'Hide Empty Columns', 'stackboost-for-supportcandy' ), [ $this, 'render_checkbox_field' ], $page_slug, 'stackboost_general_cleanup_section', [ 'id' => 'enable_hide_empty_columns', 'desc' => 'Automatically hide any column in the ticket list that is completely empty.' ] );
 		add_settings_field( 'stackboost_enable_hide_priority_column', __( 'Hide Priority Column', 'stackboost-for-supportcandy' ), [ $this, 'render_checkbox_field' ], $page_slug, 'stackboost_general_cleanup_section', [ 'id' => 'enable_hide_priority_column', 'desc' => 'Hides the "Priority" column if all visible tickets have a priority of "Low".' ] );
@@ -528,29 +497,7 @@ class WordPress extends Module {
 		}
 	}
 
-	/**
-	 * Renders a checkbox field that is disabled if a Pro feature is not active.
-	 */
-	public function render_pro_checkbox_field( array $args ) {
-		$options = get_option( 'stackboost_settings' );
-		$id      = $args['id'];
-		$feature = $args['feature'] ?? 'unified_ticket_macro';
-
-		$is_active = stackboost_is_feature_active( $feature );
-		// If active, check if option is set. If not active, force unchecked.
-		$checked  = $is_active && ! empty( $options[ $id ] ) ? 'checked' : '';
-		$disabled = $is_active ? '' : 'disabled';
-
-		echo '<input type="checkbox" id="' . esc_attr( $id ) . '" name="stackboost_settings[' . esc_attr( $id ) . ']" value="1" ' . esc_attr( $checked ) . ' ' . esc_attr( $disabled ) . '>';
-		if ( ! empty( $args['desc'] ) ) {
-			echo '<p class="description">' . esc_html( $args['desc'] ) . '</p>';
-		}
-		if ( ! $is_active ) {
-			echo '<p class="description" style="color: #d63638;">' . esc_html__( 'This feature is available in the Pro version.', 'stackboost-for-supportcandy' ) . '</p>';
-		}
-	}
-
-	/**
+/**
 	 * Renders a select field for a settings page.
 	 */
 	public function render_select_field( $args ) {
@@ -570,89 +517,7 @@ class WordPress extends Module {
 		}
 	}
 
-	/**
-	 * Renders the view type select field with Pro logic.
-	 */
-	public function render_view_type_select( $args ) {
-		$options = get_option( 'stackboost_settings' );
-		$id = $args['id'];
-		$selected = $options[ $id ] ?? 'standard';
-
-		$is_pro_active = stackboost_is_feature_active( 'unified_ticket_macro' );
-
-		echo '<select id="' . esc_attr( $id ) . '" name="stackboost_settings[' . esc_attr( $id ) . ']">';
-
-		// Standard
-		echo '<option value="standard" ' . selected( $selected, 'standard', false ) . '>' . esc_html__( 'Standard', 'stackboost-for-supportcandy' ) . '</option>';
-
-		// UTM (Pro)
-		$utm_label = esc_html__( 'Unified Ticket Macro', 'stackboost-for-supportcandy' );
-		$disabled_attr = '';
-		if ( ! $is_pro_active ) {
-			$disabled_attr = 'disabled';
-		}
-
-		echo '<option value="utm" ' . selected( $selected, 'utm', false ) . ' ' . esc_attr( $disabled_attr ) . '>' . esc_html( $utm_label ) . '</option>';
-
-		echo '</select>';
-
-		if ( ! $is_pro_active ) {
-			echo ' <span class="stackboost-badge-pro" title="' . esc_attr__( 'Upgrade to Pro or Business to enable this feature.', 'stackboost-for-supportcandy' ) . '">PRO</span>';
-		}
-
-		// Inline script to warn about UTM configuration AND toggle limit field
-		?>
-		<script>
-		jQuery(document).ready(function($) {
-			// UTM Alert Logic
-			var utmEnabled = <?php echo stackboost_is_feature_active( 'unified_ticket_macro' ) ? 'true' : 'false'; ?>;
-			$('#ticket_details_view_type').on('change', function() {
-				if ($(this).val() === 'utm') {
-					if (!utmEnabled) {
-						alert('<?php echo esc_js( __( 'The Unified Ticket Macro feature is not active on your plan.', 'stackboost-for-supportcandy' ) ); ?>');
-					} else {
-						alert('<?php echo esc_js( __( 'Reminder: Please ensure the Unified Ticket Macro module is enabled and configured in its settings page for this view to function correctly.', 'stackboost-for-supportcandy' ) ); ?>');
-					}
-				}
-			});
-
-			// Conditional Logic for Content Options
-			var $limitRow = $('#ticket_details_history_limit').closest('tr');
-			var $imageHandlingRow = $('#ticket_details_image_handling').closest('tr');
-			var $contentSelect = $('#ticket_details_content');
-
-			function toggleFields() {
-				var val = $contentSelect.val();
-				if (val === 'details_only') {
-					// Hide both
-					$limitRow.hide();
-					$imageHandlingRow.hide();
-				} else if (val === 'with_description') {
-					// Show Image Handling, Hide Limit
-					$limitRow.hide();
-					$imageHandlingRow.show();
-				} else if (val === 'with_history') {
-					// Show Both
-					$limitRow.show();
-					$imageHandlingRow.show();
-				}
-			}
-
-			// Initial State
-			toggleFields();
-
-			// Change Listener
-			$contentSelect.on('change', toggleFields);
-		});
-		</script>
-		<?php
-
-		if ( ! empty( $args['desc'] ) ) {
-			echo '<p class="description">' . esc_html( $args['desc'] ) . '</p>';
-		}
-	}
-
-	/**
+/**
 	 * Renders a textarea field for a settings page.
 	 */
 	public function render_textarea_field( array $args ) {
