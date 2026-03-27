@@ -1,5 +1,21 @@
-steps:
-      - uses: actions/checkout@v4
+name: Jules AI Integration
+
+on:
+  workflow_dispatch:      # This creates the "Invoke" button in the Actions tab
+  issue_comment:          # This allows Jules to respond to PR comments
+    types: [created]
+
+jobs:
+  jules_job:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Jules Invoke
         uses: BeksOmega/jules-action@v1.0.0
