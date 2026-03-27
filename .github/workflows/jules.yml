@@ -1,13 +1,13 @@
 name: Jules AI Integration
 
 on:
-  workflow_dispatch:
-  issue_comment:
+  workflow_dispatch:      # Creates the "Invoke" button in Actions
+  issue_comment:          # Allows Jules to respond to @jules comments
     types: [created]
 
 env:
-  # This fixes the Node.js 20 deprecation warning you are seeing
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  # Opts into Node 24 to suppress the warning if the runner allows it
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
 
 jobs:
   jules_job:
@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Invoke Jules
-        # Use the official Google Labs production action
+        # Switched to the official Google Labs production action
         uses: google-labs-code/jules-action@v1
         with:
           jules_api_key: ${{ secrets.JULES_API_KEY }}
