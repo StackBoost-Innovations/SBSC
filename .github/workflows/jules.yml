@@ -1,12 +1,12 @@
 name: Jules AI Integration
 
 on:
-  workflow_dispatch:      # Creates the "Invoke" button in Actions
-  issue_comment:          # Allows Jules to respond to @jules comments
+  workflow_dispatch:      # Manual "Run workflow" button
+  issue_comment:          # Responds to @jules in PRs
     types: [created]
 
 env:
-  # Opts into Node 24 to suppress the warning if the runner allows it
+  # Opts into Node 24 for 2026 compatibility
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Invoke Jules
-        # Switched to the official Google Labs production action
+        # This is the official Google Labs production repo
         uses: google-labs-code/jules-action@v1
         with:
           jules_api_key: ${{ secrets.JULES_API_KEY }}
