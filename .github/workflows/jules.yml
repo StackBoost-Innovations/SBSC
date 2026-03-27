@@ -1,12 +1,12 @@
 name: Jules AI Integration
 
 on:
-  workflow_dispatch:      # Manual "Run workflow" button
-  issue_comment:          # Responds to @jules in PRs
+  workflow_dispatch:      # This creates the "Run workflow" button
+  issue_comment:          # This lets Jules respond to @jules comments in PRs
     types: [created]
 
 env:
-  # Opts into Node 24 for 2026 compatibility
+  # This stops the Node 20 warning you're seeing in 2026
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
 
 jobs:
@@ -21,8 +21,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Invoke Jules
-        # This is the official Google Labs production repo
-        uses: google-labs-code/jules-action@v1
+      - name: Jules Invoke
+        uses: BeksOmega/jules-action@v1.0.0
+        with:
+          jules_api_key: ${{ secrets.JULES_API_KEY }}
+          # A prompt is REQUIRED to prevent Exit Code 1
+          prompt: "Analyze this repository and initialize it for my Jules dashboard."
+
+      - name: Jules PR Comment
+        uses: BeksOmega/jules-publish@v1.0.0
+        with:
+          jules_api_key: ${{ secrets.JULES_API_KEY }}
+
+      - name: Send Feedback to Jules
+        uses: BeksOmega/jules-comms@v1.0.0
         with:
           jules_api_key: ${{ secrets.JULES_API_KEY }}
