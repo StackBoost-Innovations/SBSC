@@ -1,8 +1,8 @@
 name: Jules AI Integration
 
 on:
-  workflow_dispatch:      # This creates the "Invoke" button in the Actions tab
-  issue_comment:          # This allows Jules to respond to PR comments
+  workflow_dispatch:      # This adds the "Invoke" button to your Actions tab
+  issue_comment:          # This lets Jules respond to @jules comments in PRs
     types: [created]
 
 jobs:
@@ -18,16 +18,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Jules Invoke
-        uses: BeksOmega/jules-action@v1.0.0
+        uses: google-labs-code/jules-action@v1.0.0
         with:
           jules_api_key: ${{ secrets.JULES_API_KEY }}
 
       - name: Jules PR Comment
-        uses: BeksOmega/jules-publish@v1.0.0
+        uses: google-labs-code/jules-publish@v1.0.0
         with:
           jules_api_key: ${{ secrets.JULES_API_KEY }}
 
       - name: Send Feedback to Jules
-        uses: BeksOmega/jules-comms@v1.0.0
+        uses: google-labs-code/jules-comms@v1.0.0
         with:
           jules_api_key: ${{ secrets.JULES_API_KEY }}
